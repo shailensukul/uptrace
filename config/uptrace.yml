@@ -53,7 +53,8 @@ ch:
   # clickhouse://<user>:<password>@<host>:<port>/<database>?sslmode=disable
   #
   # See https://clickhouse.uptrace.dev/guide/golang-clickhouse.html#options
-  dsn: 'clickhouse://default:@localhost:9000/uptrace?sslmode=disable'
+  # dsn: 'clickhouse://default:@localhost:9000/uptrace?sslmode=disable'
+  dsn: 'clickhouse://default:@clickhouse:9000/uptrace?sslmode=disable'
 
 ##
 ## Alerting rules for monitoring metrics.

@@ -12,12 +12,16 @@ services:
       timeout: 1s
       retries: 30
     volumes:
+      - ../../config/clickhouse/config.xml:/etc/clickhouse-server/config.d/config.xml      
       - ch_data:/var/lib/clickhouse
+    # network_mode: host
     ports:
       - '8123:8123'
       - '9000:9000'
+    networks:
+      - clickhouse-net
     extra_hosts:
-      - 'host.docker.internal:host-gateway'
+     - 'host.docker.internal:host-gateway'
 
   uptrace:
     image: 'uptrace/uptrace:latest'
@@ -25,10 +29,16 @@ services:
     volumes:
       - uptrace_data:/var/lib/uptrace
       - ../../config/uptrace.yml:/etc/uptrace/uptrace.yml
-    network_mode: host
+    #network_mode: host
+    ports:
+      - '14317:14317' # OTLP
+      - '14318:14318' # UI and HTTP API
+    networks:
+      - clickhouse-net
     environment:
       - UPTRACE_DB_FILE=/var/lib/uptrace/uptrace.sqlite3
-      #- DEBUG=2
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     depends_on:
       clickhouse:
         condition: service_healthy
@@ -74,3 +84,7 @@ volumes:
     driver: local
   alertmanager_data:
     driver: local
+
+networks:
+  clickhouse-net:
+    external: false
